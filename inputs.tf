@@ -43,9 +43,11 @@ variable "deployment" {
 }
 
 variable "fqdn" {
+  default = ""
 }
 
 variable "cert_arn" {
+  default = ""
 }
 
 variable "allowed_ips" {
