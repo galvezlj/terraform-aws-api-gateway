@@ -225,6 +225,7 @@ resource "aws_api_gateway_stage" "main" {
 }
 
 resource "aws_api_gateway_domain_name" "main" {
+  count = var.fqdn == "" ? 0 : 1
   domain_name = var.fqdn
 
   endpoint_configuration {
@@ -234,13 +235,14 @@ resource "aws_api_gateway_domain_name" "main" {
 }
 
 resource "aws_api_gateway_base_path_mapping" "main" {
+  count = var.fqdn == "" ? 0 : 1
   api_id      = aws_api_gateway_rest_api.main.id
   stage_name  = aws_api_gateway_stage.main.stage_name
   domain_name = aws_api_gateway_domain_name.main.domain_name
 }
 
 resource "aws_api_gateway_usage_plan" "main" {
-  name         = "ipt"
+  name         = var.name
 
   api_stages {
     api_id = aws_api_gateway_rest_api.main.id
@@ -249,7 +251,7 @@ resource "aws_api_gateway_usage_plan" "main" {
 }
 
 resource "aws_wafv2_web_acl" "main" {
-  name  = "ipt"
+  name  = var.name
   scope = "REGIONAL"
 
   default_action {
@@ -258,7 +260,7 @@ resource "aws_wafv2_web_acl" "main" {
 
   visibility_config {
     cloudwatch_metrics_enabled = true
-    metric_name                = "ipt"
+    metric_name                = var.name
     sampled_requests_enabled   = true
   }
 }
@@ -274,7 +276,7 @@ resource "aws_wafv2_web_acl_logging_configuration" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "main" {
-  name              = "aws-waf-logs-ipt"
+  name              = "aws-waf-logs-apigw-${var.name}"
   retention_in_days = 120
 }
 

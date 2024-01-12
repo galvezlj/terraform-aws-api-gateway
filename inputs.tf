@@ -5,16 +5,13 @@ variable "name" {
 
 variable "nlb_arn" {
   type = string
+  default = ""
   description = "The ARN of the internal NLB"
-}
-
-variable "app_port" {
-  type = number 
-  description = "The Application port"
 }
 
 variable "nlb_dns_name" {
   type = string
+  default = ""
   description = "The DNS name of the internal NLB"
 }
 
