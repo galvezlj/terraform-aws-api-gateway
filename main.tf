@@ -186,7 +186,7 @@ resource "aws_api_gateway_integration" "main" {
   integration_http_method = var.integration_http_method
 
   connection_type = "VPC_LINK"
-  connection_id   = "${aws_api_gateway_vpc_link.this.id}"
+  connection_id   = "${aws_api_gateway_vpc_link.this[0].id}"
 }
 
 resource "aws_api_gateway_deployment" "main" {
@@ -210,6 +210,7 @@ resource "aws_api_gateway_deployment" "main" {
 }
 
 resource "aws_api_gateway_vpc_link" "this" {
+  count = var.nlb_arn == "" ? 0 : 1
   name = "vpc-link-${var.name}"
   target_arns = [var.nlb_arn]
 }
